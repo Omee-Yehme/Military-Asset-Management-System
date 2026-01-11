@@ -20,8 +20,7 @@ app.get("/", (req, res) => {
     res.send("Welcome to Military Asset Management server! , API is running...");
 })
 
-app.use("/auth", authRoutes)
-
+app.use("/api/auth", authRoutes)
 
 
 app.listen(process.env.PORT, () => {
