@@ -35,8 +35,10 @@ exports.createTransfer = async (req, res) => {
             initiatedBy: req.user.userId
         });
 
+        console.log('Transfer created:', transfer._id);
         res.status(201).json(transfer);
     } catch (err) {
+        console.error('createTransfer error:', err);
         res.status(500).json({ message: "Server error" });
     }
 };

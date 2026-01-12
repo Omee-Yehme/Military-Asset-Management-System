@@ -5,48 +5,146 @@ const Assignment = require("../models/assignment");
 const Expenditure = require("../models/expenditure");
 
 exports.getDashboard = async (req, res) => {
-    const filter = req.user.role === "Admin"
-        ? {}
-        : { baseId: req.user.baseId };
+    try {
+        const { date, equipmentType } = req.query;
 
-    const assets = await Asset.find(filter);
+        const baseId =
+            req.user.role === "Admin" ? req.query.baseId : req.user.baseId;
 
-    const purchases = await Purchase.find(filter);
-    const assignments = await Assignment.find(filter);
-    const expenditures = await Expenditure.find(filter);
+        // ---- Asset Filter ----
+        const assetFilter = {};
+        if (baseId) assetFilter.baseId = baseId;
+        if (equipmentType) assetFilter.type = equipmentType;
 
-    const transfersIn = await Transfer.find({
-        toBaseId: req.user.baseId
-    });
+        const assets = await Asset.find(assetFilter);
 
-    const transfersOut = await Transfer.find({
-        fromBaseId: req.user.baseId
-    });
+        // ---- Date filter for transactions ----
+        let dateFilter = {};
+        if (date) {
+            const start = new Date(date);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
 
-    const openingBalance =
-        purchases.reduce((s, p) => s + p.quantity, 0);
+            dateFilter = {
+                createdAt: { $gte: start, $lte: end },
+            };
+        }
 
-    const assigned =
-        assignments.reduce((s, a) => s + a.quantity, 0);
+        const results = [];
 
-    const expended =
-        expenditures.reduce((s, e) => s + e.quantity, 0);
+        for (const asset of assets) {
+            const purchases = await Purchase.aggregate([
+                {
+                    $match: {
+                        assetId: asset._id,
+                        ...(baseId ? { baseId } : {}),
+                        ...dateFilter,
+                    },
+                },
+                { $group: { _id: null, total: { $sum: "$quantity" } } },
+            ]);
 
-    const transferInQty =
-        transfersIn.reduce((s, t) => s + t.quantity, 0);
+            const transferIn = await Transfer.aggregate([
+                {
+                    $match: {
+                        assetId: asset._id,
+                        ...(baseId ? { toBaseId: baseId } : {}),
+                        ...dateFilter,
+                    },
+                },
+                { $group: { _id: null, total: { $sum: "$quantity" } } },
+            ]);
 
-    const transferOutQty =
-        transfersOut.reduce((s, t) => s + t.quantity, 0);
+            const transferOut = await Transfer.aggregate([
+                {
+                    $match: {
+                        assetId: asset._id,
+                        ...(baseId ? { fromBaseId: baseId } : {}),
+                        ...dateFilter,
+                    },
+                },
+                { $group: { _id: null, total: { $sum: "$quantity" } } },
+            ]);
 
-    const closingBalance =
-        assets.reduce((s, a) => s + a.quantity, 0);
+            const assignments = await Assignment.aggregate([
+                {
+                    $match: {
+                        assetId: asset._id,
+                        ...(baseId ? { baseId } : {}),
+                        ...dateFilter,
+                    },
+                },
+                { $group: { _id: null, total: { $sum: "$quantity" } } },
+            ]);
 
-    res.json({
-        openingBalance,
-        closingBalance,
-        netMovement:
-            openingBalance + transferInQty - transferOutQty,
-        assigned,
-        expended
-    });
+            const expenditures = await Expenditure.aggregate([
+                {
+                    $match: {
+                        assetId: asset._id,
+                        ...(baseId ? { baseId } : {}),
+                        ...dateFilter,
+                    },
+                },
+                { $group: { _id: null, total: { $sum: "$quantity" } } },
+            ]);
+
+            const purchaseQty = purchases[0]?.total || 0;
+            const transferInQty = transferIn[0]?.total || 0;
+            const transferOutQty = transferOut[0]?.total || 0;
+            const assignedQty = assignments[0]?.total || 0;
+            const expendedQty = expenditures[0]?.total || 0;
+
+            const openingBalance =
+                asset.quantity +
+                assignedQty +
+                expendedQty -
+                purchaseQty -
+                transferInQty +
+                transferOutQty;
+
+            const closingBalance =
+                openingBalance +
+                purchaseQty +
+                transferInQty -
+                transferOutQty -
+                assignedQty -
+                expendedQty;
+
+            results.push({
+                assetId: asset._id,
+                assetName: asset.name,
+                type: asset.type,
+                openingBalance,
+                purchases: purchaseQty,
+                transferIn: transferInQty,
+                transferOut: transferOutQty,
+                assigned: assignedQty,
+                expended: expendedQty,
+                closingBalance,
+            });
+        }
+
+        res.json(results);
+    } catch (err) {
+        console.error("Dashboard error:", err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+
+exports.deleteDashboard = async (req, res) => {
+    try {
+        const assetId = req.params.id;
+
+        await Asset.findByIdAndDelete(assetId);
+        await Purchase.deleteMany({ assetId });
+        await Transfer.deleteMany({ assetId });
+        await Assignment.deleteMany({ assetId });
+        await Expenditure.deleteMany({ assetId });
+
+        res.status(200).json({ message: "Asset and all related records deleted" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

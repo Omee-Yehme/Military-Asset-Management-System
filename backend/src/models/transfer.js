@@ -11,16 +11,16 @@ const transferSchema = new mongoose.Schema({
         ref: "Base",
         required: true
     },
-    materialId: {
+    assetId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Material",
+        ref: "Asset",
         required: true
     },
     quantity: {
         type: Number,
         required: true
     },
-    createdBy: {
+    initiatedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
