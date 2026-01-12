@@ -5,21 +5,24 @@ const auth = require("../middlewares/auth");
 const rbac = require("../middlewares/rbac");
 const baseGuard = require("../middlewares/baseGuard");
 
-const assignmentController = require("../controllers/assignmentController");
+const {
+    createAssignment,
+    getAssignments
+} = require("../controllers/assignmentController");
 
 router.post(
-  "/",
-  auth,
-  rbac("assign"),
-  baseGuard,
-  assignmentController.createAssignment
+    "/",
+    auth,
+    rbac("canAccessBaseOnly"),
+    baseGuard,
+    createAssignment
 );
 
 router.get(
-  "/",
-  auth,
-  rbac("viewAssignments"),
-  assignmentController.getAssignments
+    "/",
+    auth,
+    rbac("canAccessBaseOnly"),
+    getAssignments
 );
 
 module.exports = router;

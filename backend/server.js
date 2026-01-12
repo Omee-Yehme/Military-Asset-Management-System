@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); 
+require('dotenv').config();
 const authRoutes = require('./src/routes/authRoutes');
 const purchaseRoutes = require('./src/routes/purchaseRoutes');
 const transferRoutes = require('./src/routes/transferRoutes');
@@ -12,14 +12,17 @@ const baseRoutes = require("./src/routes/baseRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:5173",  
+    credentials: true
+}));
 
-// Connect to MongoDB   
+app.use(express.json());
+ 
 
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log(err));
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log(err));
 
 
 app.get("/", (req, res) => {

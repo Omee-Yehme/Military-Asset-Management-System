@@ -1,17 +1,28 @@
 const Expenditure = require("../models/expenditure");
+const Asset = require("../models/asset");
 
 exports.createExpenditure = async (req, res) => {
     try {
+        const { assetId, baseId, quantity, reason } = req.body;
+
+        const asset = await Asset.findOne({ _id: assetId, baseId });
+        if (!asset || asset.quantity < quantity) {
+            return res.status(400).json({ message: "Insufficient stock" });
+        }
+
+        asset.quantity -= quantity;
+        await asset.save();
+
         const expenditure = await Expenditure.create({
-            assetId: req.body.assetId,
-            baseId: req.body.baseId,
-            quantity: req.body.quantity,
-            reason: req.body.reason
+            assetId,
+            baseId,
+            quantity,
+            reason,
+            dateExpended: new Date()
         });
 
-        res.status(201).json({ success: true, expenditure });
+        res.status(201).json(expenditure);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: "Server error" });
     }
 };

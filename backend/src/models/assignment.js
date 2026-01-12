@@ -1,24 +1,27 @@
 const mongoose = require("mongoose");
 
 const assignmentSchema = new mongoose.Schema({
+    assetId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Asset",
+        required: true
+    },
     baseId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Base",
         required: true
     },
-    materialId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Material",
-        required: true
-    },
-    assignedQuantity: {
+    quantity: {
         type: Number,
         required: true
     },
-    assignedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    assignedTo: {
+        type: String,
         required: true
+    },
+    assignmentDate: {
+        type: Date,
+        default: Date.now
     }
 }, { timestamps: true });
 

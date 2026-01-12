@@ -41,22 +41,25 @@ exports.getAssets = async (req, res) => {
  * Update Asset Quantity
  */
 exports.updateAsset = async (req, res) => {
-    try {
-        const asset = await Asset.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-
-        if (!asset) {
-            return res.status(404).json({ message: "Asset not found" });
-        }
-
-        res.json(asset);
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
+    if ("quantity" in req.body) {
+        return res.status(400).json({
+            message: "Quantity can only be updated via transactions"
+        });
     }
+
+    const asset = await Asset.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+    );
+
+    if (!asset) {
+        return res.status(404).json({ message: "Asset not found" });
+    }
+
+    res.json(asset);
 };
+
 
 /**
  * Delete Asset (Admin only)
