@@ -81,7 +81,7 @@ export default function Expenditures() {
       <Navbar colour="#0071dc" bgColour="#002344" />
 
       <div className="p-8 w-[80%] mx-auto font-mono">
-        {(user.role === "Admin" || user.role === "Base Commander") && (
+        {(user.role === "Admin" || user.role === "BaseCommander") && (
           <button
             onClick={() => setShowModal(true)}
             className="bg-[#0071dc] text-white px-6 py-3 rounded-full mb-6 hover:scale-105 transition"
