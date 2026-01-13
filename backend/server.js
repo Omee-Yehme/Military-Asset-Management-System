@@ -18,9 +18,17 @@ const app = express();
 /* -------------------- Middleware -------------------- */
 
 app.use(cors({
-    origin: ["https://mams-eta.vercel.app/", "https://military-asset-management-system-rzk5.onrender.com"],
+    origin: [
+        "http://localhost:5173",
+        "https://mams-eta.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+
+// VERY IMPORTANT (handles preflight)
+app.options("*", cors());
 
 app.use(express.json());
 
