@@ -12,12 +12,11 @@ export default function DashboardCards() {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    // Fetch all bases for dropdown
     useEffect(() => {
         const fetchBases = async () => {
             try {
-                const res = await api.get("/bases"); // your API to get base list
-                setBases(res.data); // assuming [{_id, name}, ...]
+                const res = await api.get("/bases");
+                setBases(res.data); 
             } catch (err) {
                 console.error(err);
             }
@@ -25,7 +24,7 @@ export default function DashboardCards() {
         fetchBases();
     }, []);
 
-    // Fetch assets with filters
+
     const fetchAssets = async () => {
         try {
             const params = {};
@@ -65,8 +64,8 @@ export default function DashboardCards() {
     };
 
     return (
-        <div className="p-4">
-            {/* Filters */}
+        <div className="p-4 ">
+
             <div className="mb-6 flex justify-end mr-[10%] flex-wrap gap-4 items-end">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">

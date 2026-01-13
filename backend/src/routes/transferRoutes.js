@@ -19,7 +19,7 @@ router.post(
 router.get(
     "/",
     auth,
-    rbac("canAccessBaseOnly"),
+    rbac("canTransfer"),
     getTransfers
 );
 

@@ -5,6 +5,7 @@ import Purchases from "./pages/Purchases"
 import Transfers from "./pages/Transfers"
 import Assignments from "./pages/Assignments"
 import Expenditures from "./pages/Expenditures"
+import Unauthorized from "./components/Unauthorized"
 
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
       <Route path="/transfers" element={<Transfers />} />
       <Route path="/assignments" element={<Assignments />} />
       <Route path="/expenditures" element={<Expenditures />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
 
     </Routes>
   )
