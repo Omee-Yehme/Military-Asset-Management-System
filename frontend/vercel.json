@@ -1,8 +1,28 @@
 {
-    "rewrites": [
+    "routes": [
         {
-            "source": "/(.*)",
-            "destination": "/dist/index.html"
-        }
+            "source": "/",
+            "destination": "/"
+        },
+        {
+            "source":"/dashboard",
+            "destination":"/dashboard"
+        },
+        {
+            "source":"/purchases",
+            "destination":"/purchases"
+        },
+        {
+            "source":"/transfers",
+            "destination":"/transfers"
+        },
+        {
+            "source":"/assignments",
+            "destination":"/assignments"
+        },
+        {
+            "source":"/expenditures",
+            "destination":"/expenditures"
+        }   
     ]
 }
