@@ -1,28 +1,28 @@
 {
     "routes": [
         {
-            "source": "/",
-            "destination": "/"
+            "src": "/",
+            "dest": "/"
         },
         {
-            "source":"/dashboard",
-            "destination":"/dashboard"
+            "src":"/dashboard",
+            "dest":"/dashboard"
         },
         {
-            "source":"/purchases",
-            "destination":"/purchases"
+            "src":"/purchases",
+            "dest":"/purchases"
         },
         {
-            "source":"/transfers",
-            "destination":"/transfers"
+            "src":"/transfers",
+            "dest":"/transfers"
         },
         {
-            "source":"/assignments",
-            "destination":"/assignments"
+            "src":"/assignments",
+            "dest":"/assignments"
         },
         {
-            "source":"/expenditures",
-            "destination":"/expenditures"
+            "src":"/expenditures",
+            "dest":"/expenditures"
         }   
     ]
 }
