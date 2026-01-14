@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardCards from "../components/DashboardCards";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
@@ -18,7 +18,10 @@ export default function Dashboard() {
     name: "",
     location: "",
   });
-
+    useEffect(() => {
+    document.title = "MAMS - Dashboard";
+  }, []);
+    
   const addAsset = async () => {
     try {
       const res = await api.post("/assets", asset);

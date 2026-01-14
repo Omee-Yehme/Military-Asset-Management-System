@@ -45,7 +45,7 @@ export default function Transfers() {
     navigate("/unauthorized");
     return;
   }
-
+  document.title = "MAMS - Transfers";
   // eslint-disable-next-line react-hooks/set-state-in-effect
   loadData();  
 }, []);

@@ -49,7 +49,7 @@ export default function Assignments() {
       navigate("/unauthorized");
       return;
     }
-
+    document.title = "MAMS - Assignments";
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadAll();
   }, []);

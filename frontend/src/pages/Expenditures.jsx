@@ -46,7 +46,7 @@ export default function Expenditures() {
       navigate("/unauthorized");
       return;
     }
-
+    document.title = "MAMS - Expenditures";
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();   // Only allowed roles hit API
   }, []);

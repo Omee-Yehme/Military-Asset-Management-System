@@ -55,7 +55,7 @@ export default function Purchases() {
     navigate("/unauthorized");
     return;
   }
-
+  document.title = "MAMS - Purchases";
   // eslint-disable-next-line react-hooks/set-state-in-effect
   loadAll();  
 }, []);
